@@ -21,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.forage.BaseApplication
 import com.example.forage.R
@@ -28,6 +29,7 @@ import com.example.forage.databinding.FragmentForageableListBinding
 import com.example.forage.ui.adapter.ForageableListAdapter
 import com.example.forage.ui.viewmodel.ForageableViewModel
 import com.example.forage.ui.viewmodel.ForageableViewModelFactory
+import kotlinx.coroutines.launch
 
 /**
  * A fragment to view the list of [Forageable]s stored in the database.
@@ -67,6 +69,12 @@ class ForageableListFragment : Fragment() {
         }
 
         // TODO: observe the list of forageables from the view model and submit it the adapter
+
+        viewModel.allForageables.observe(this.viewLifecycleOwner){
+            lifecycleScope.launch {
+                adapter.submitList(it)
+            }
+        }
 
         binding.apply {
             recyclerView.adapter = adapter
